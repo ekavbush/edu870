@@ -22,6 +22,7 @@ if (btnK != undefined){
     for(let i=0; i<links.length; i++){
         if(links[i].href.indexOf("www.detmir.ru/catalog/index/name/lego_duplo/") != -1){
             console.log("Ссылка найдена "+links[i]);
+            links[i].removeAttribute("target");
             links[i].click();
             break;
         }
