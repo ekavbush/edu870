@@ -6,18 +6,45 @@
 // @author       ekav
 // @match        https://yandex.ru/*
 // @match        https://www.detmir.ru/*
+// @match        https://www.toyway.ru/*
 // @grant        none
 // ==/UserScript==
 
+let sites = { //список сайтов с ключевыми словами для каждого
+    "www.toyway.ru":['радиоуправляемый танк','робокар поли игрушка','детская железная дорога купить'],
+    "www.detmir.ru":['lego duplo','лего дупло детский мир', 'лего на 2 года','барабан купить']
+};
 
-let keywords = ['lego duplo','лего дупло детский мир', 'лего на 2 года','барабан купить'];
-let keyword = keywords[getRandom(0,keywords.length)];
+let site = Object.keys(sites)[getRandom(0,Object.keys(sites).length)]; //конкретный сайт, выбранный случайным образом из списка
+
+let keywords = sites[site]; //ключевые слова конкретного сайта
+let keyword = keywords[getRandom(0,keywords.length)]; //случайное из ключевых слов
+
 let btnK = document.querySelectorAll(".button_theme_websearch")[0];
 let YandexInput = document.getElementById('text');
 let i = 0;
 let links = document.links;
 
+//если на сайте поисковика и запустили поиск, записать наш случайный сайт в cookie
+//тот сайт, который будем искать в результатах поиска
 if (btnK != undefined){
+    document.cookie = "site="+site;
+}else if (location.hostname == "yandex.ru"){
+    //если после "хождений" вернулись на сайт поисковика,
+    //взять наш случайный сайт из кукиз (тот сайт, который будем искать
+    site = getCookie("site");
+}else{
+    //если зашли на конкретный сайт, то его и исследуем
+    //с cookie не общаемся
+    site = location.hostname;
+}
+// разобрались, как не потерять сайт
+// идем дальше
+
+
+
+if (btnK != undefined){
+    document.cookie = "site="+site;
     let timerId = setInterval(()=>{
         YandexInput.value += keyword[i];
         i++;
@@ -26,11 +53,12 @@ if (btnK != undefined){
             btnK.click();
         }
     },1000);
-}else if(location.host == "www.detmir.ru"){ //hostname у detmira не содержит detmir.ru
+//}else if(location.host == "www.detmir.ru"){ //hostname у detmira не содержит detmir.ru
+}else if(location.host.indexOf("detmir.ru") != -1){ //hostname у detmira не содержит detmir.ru
     setInterval(()=>{
         let cur_index = getRandom(0,links.length);
         if (getRandom(0,101)>=70){
-            location.href = 'https://www.yandex.ru/';
+            location.href = 'https://yandex.ru/';
         }
         else if (links[cur_index].href.indexOf("www.detmir.ru") != -1) {
             links[cur_index].click();
@@ -63,4 +91,10 @@ if (btnK != undefined){
 
 function getRandom(min,max){
     return Math.floor(Math.random()*(max-min)+min);
+}
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
 }
