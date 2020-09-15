@@ -41,7 +41,12 @@ if (btnK != undefined){
 // разобрались, как не потерять сайт
 // идем дальше
 
-
+//если детмир, создадим нужную строку для проверки вхождения в host ---
+//let siteName = site;
+//if(site=="www.detmir.ru"){
+//  siteName = site.slice(4);
+//}
+//---------------------------------------------------------------------
 
 if (btnK != undefined){
     document.cookie = "site="+site;
@@ -53,21 +58,21 @@ if (btnK != undefined){
             btnK.click();
         }
     },1000);
-//}else if(location.host == "www.detmir.ru"){ //hostname у detmira не содержит detmir.ru
-}else if(location.host.indexOf("detmir.ru") != -1){ //hostname у detmira не содержит detmir.ru
+//}else if(location.host.indexOf(siteName) == -1){ //hostname у detmira не содержит detmir.ru
+}else if(location.host == site){
     setInterval(()=>{
         let cur_index = getRandom(0,links.length);
         if (getRandom(0,101)>=70){
             location.href = 'https://yandex.ru/';
         }
-        else if (links[cur_index].href.indexOf("www.detmir.ru") != -1) {
+        else if (links[cur_index].href.indexOf(site) != -1) {
             links[cur_index].click();
         }
     },getRandom(3000,7000));
 }else{
     let nextYaPage = true;
     for(let i=0; i<links.length; i++){
-        if(links[i].href.indexOf("www.detmir.ru") != -1){
+        if(links[i].href.indexOf(site) != -1){
             let link = links[i];
             nextYaPage = false;
             setTimeout(()=>{
